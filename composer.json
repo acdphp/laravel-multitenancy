@@ -1,0 +1,28 @@
+{
+    "name": "acdphp/laravel-multitenancy",
+    "description": "Laravel multi-tenancy model scoping and automatic tenancy assignment.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carlo Dinopol",
+            "email": "carlo.dinopol@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.13",
+        "phpstan/phpstan": "^1.10",
+        "nunomaduro/larastan": "^2.6",
+        "ekino/phpstan-banned-code": "^1.0",
+        "orchestra/testbench": "^8.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acdphp\\Multitenancy\\": "src/"
+        }
+    }
+}
