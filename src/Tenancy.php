@@ -8,12 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Tenancy
 {
     protected Model $tenant;
+
     protected bool $scopeBypass = false;
+
     protected bool $creatingBypass = false;
 
     public function tenant(): Model
     {
         return $this->tenant;
+    }
+
+    public function tenantId(): int|string
+    {
+        return $this->tenant()->{config('multitenancy.tenant_ref_key')};
     }
 
     /**

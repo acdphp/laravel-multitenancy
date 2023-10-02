@@ -17,7 +17,7 @@ class TenancyServiceProvider extends BaseServiceProvider
             $service = new Tenancy();
 
             if (! $app->runningInConsole() && ($user = $app->get('request')->user())) {
-                $service->setTenant($user->{config('multitenancy.tenant_key')});
+                $service->setTenant($user->{config('multitenancy.tenant_ref_key')});
             }
 
             return $service;
@@ -38,7 +38,7 @@ class TenancyServiceProvider extends BaseServiceProvider
 
         // Publish config
         $this->publishes([
-            __DIR__.'/../config/multitenancy.php' => config_path('multitenancy.php')
+            __DIR__.'/../config/multitenancy.php' => config_path('multitenancy.php'),
         ], 'multitenancy-config');
     }
 }

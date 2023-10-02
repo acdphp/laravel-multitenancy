@@ -15,7 +15,7 @@ class TenantScope implements Scope
             return;
         }
 
-        $builder->where($this->getModelTenantKey($model), Tenancy::tenant()->id);
+        $builder->where($this->getModelTenantKey($model), Tenancy::tenantId());
     }
 
     public function creating(Model $model): void
@@ -24,7 +24,7 @@ class TenantScope implements Scope
             return;
         }
 
-        $model->{$this->getModelTenantKey($model)} = Tenancy::tenant()->id;
+        $model->{$this->getModelTenantKey($model)} = Tenancy::tenantId();
     }
 
     protected function getModelTenantKey(Model $model): string

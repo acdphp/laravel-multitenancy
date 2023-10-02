@@ -15,11 +15,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Tenant Key
+    | Tenant Primary Key
+    |--------------------------------------------------------------------------
+    |
+    | Column name of the tenant model.
+    |
+    */
+    'tenant_primary_key' => 'id',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tenant Reference Key
     |--------------------------------------------------------------------------
     |
     | Column name of the model that associates the tenant class.
     |
     */
-    'tenant_key' => 'company_id',
+    'tenant_ref_key' => 'company_id',
 ];

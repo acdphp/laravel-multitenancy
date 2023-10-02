@@ -4,7 +4,6 @@ namespace Acdphp\Multitenancy\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-
 /**
  * @mixin \Acdphp\Multitenancy\Tenancy
  */
