@@ -20,7 +20,7 @@ class Tenancy
 
     public function tenantId(): int|string
     {
-        return $this->tenant()->{config('multitenancy.tenant_ref_key')};
+        return $this->tenant()->{config('multitenancy.tenant_primary_key')};
     }
 
     /**

@@ -31,6 +31,6 @@ class TenantScope implements Scope
     {
         return property_exists($model, 'tenantKey') ?
             $model->tenantKey :
-            config('multitenancy.tenant_key');
+            config('multitenancy.tenant_ref_key');
     }
 }
