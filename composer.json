@@ -22,7 +22,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Acdphp\\Multitenancy\\": "src/"
+            "Acdphp\\Multitenancy\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Acdphp\\Multitenancy\\TenancyServiceProvider"
+            ],
+            "aliases": {
+                "Tenancy": "Acdphp\\Multitenancy\\Facades\\Tenancy"
+            }
         }
     }
 }
