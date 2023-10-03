@@ -3,6 +3,7 @@
 namespace Acdphp\Multitenancy;
 
 use Acdphp\Multitenancy\Exceptions\InvalidTenantClassException;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Tenancy
@@ -35,6 +36,18 @@ class Tenancy
         $this->tenant = $model;
 
         return $this;
+    }
+
+    /**
+     * @throws InvalidTenantClassException
+     */
+    public function setTenantFromAuth(Authenticatable $user): self
+    {
+        return $this->setTenant(
+            config('multitenancy.tenant_class')::find(
+                $user->{config('multitenancy.tenant_ref_key')}
+            )
+        );
     }
 
     public function scopeBypassed(): bool

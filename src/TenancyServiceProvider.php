@@ -2,6 +2,7 @@
 
 namespace Acdphp\Multitenancy;
 
+use Acdphp\Multitenancy\Http\Middleware\InjectTenancyFromAuth;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
 use Illuminate\Contracts\Foundation\Application;
@@ -13,14 +14,8 @@ class TenancyServiceProvider extends BaseServiceProvider
     public function register(): void
     {
         // Register Tenancy
-        $this->app->singleton('tenancy', function (Application $app) {
-            $service = new Tenancy();
-
-            if (! $app->runningInConsole() && ($user = $app->get('request')->user())) {
-                $service->setTenant($user->{config('multitenancy.tenant_ref_key')});
-            }
-
-            return $service;
+        $this->app->singleton('tenancy', function () {
+            return new Tenancy();
         });
 
         // Config merge
@@ -35,6 +30,9 @@ class TenancyServiceProvider extends BaseServiceProvider
         // Middleware alias
         $router->aliasMiddleware('tenancy.scope.bypass', TenancyScopeBypass::class);
         $router->aliasMiddleware('tenancy.creating.bypass', TenancyCreatingBypass::class);
+
+        // Append middleware
+        $router->pushMiddlewareToGroup('api', InjectTenancyFromAuth::class);
 
         // Publish config
         $this->publishes([
