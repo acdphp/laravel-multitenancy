@@ -5,7 +5,6 @@ namespace Acdphp\Multitenancy;
 use Acdphp\Multitenancy\Http\Middleware\InjectTenancyFromAuth;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
