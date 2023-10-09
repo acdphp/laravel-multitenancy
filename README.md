@@ -26,7 +26,7 @@ class YourModel extends Model
 ```
 
 ## Bypassing Scope
-- It is possible to bypass scoping when accessing a model that belongs to a tenant but on public endpoints. Example when logging in.
+- Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant but on public endpoints. Example when logging in.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
@@ -39,7 +39,7 @@ Route::middleware(['tenancy.scope.bypass'])->post('/login', ...);
 ```
 
 ## Bypassing Automatic Tenancy Assignment
-- Sometimes, it's needed to bypass auto-tenancy assignment when there's no source yet for tenancy. Example when registering a user + company.
+- It's also possible to bypass auto-tenancy assignment.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
@@ -48,10 +48,11 @@ Tenancy::bypassCreating();
 
 - Or by using the middleware.
 ```php
-Route::middleware(['tenancy.creating.bypass'])->post('register', ...);
+Route::middleware(['tenancy.creating.bypass'])->post('your-route', ...);
 ```
 
-- In the registration example, tenancy can be manually assigned using setTenant.
+## Manually setting tenant
+- In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned using setTenant.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
