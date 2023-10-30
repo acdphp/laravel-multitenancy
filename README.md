@@ -1,6 +1,6 @@
 # Laravel Multitenancy
-[![Latest Stable Version](https://poser.pugx.org/acdphp/laravel-multitenancy/v)](https://packagist.org/packages/cdinopol/data-guard)
-[![License](http://poser.pugx.org/acdphp/laravel-multitenancy/license)](https://packagist.org/packages/cdinopol/data-guard)
+[![Latest Stable Version](https://poser.pugx.org/acdphp/laravel-multitenancy/v)](https://packagist.org/packages/acdphp/laravel-multitenancy)
+[![License](http://poser.pugx.org/acdphp/laravel-multitenancy/license)](https://packagist.org/packages/acdphp/laravel-multitenancy)
 
 Laravel multi-tenancy model scoping and automatic tenancy assignment.
 
