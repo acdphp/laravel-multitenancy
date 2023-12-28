@@ -15,6 +15,7 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
 Route::prefix('somethings')->controller(SomethingController::class)->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', 'index');
+        Route::middleware('tenancy.scope.bypass')->get('/all', 'index');
         Route::get('/{something}', 'show');
         Route::post('/', 'store');
     });

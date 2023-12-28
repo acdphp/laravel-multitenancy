@@ -64,3 +64,14 @@ test('should scope a resource from requesting id', function () {
         ->get('somethings/' . $s2->id)
         ->assertNotFound();
 });
+
+test('allow scope bypass resources from requesting id', function () {
+    $user = UserFactory::new()->make();
+    SomethingFactory::new(['company_id' => $user->company_id])->count(3)->create();
+    SomethingFactory::new(['company_id' => CompanyFactory::new()->create()->id])->count(3)->create();
+
+    $this->actingAs($user)
+        ->get('somethings/all')
+        ->assertOk()
+        ->assertJsonCount(6);
+});
