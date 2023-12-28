@@ -1,6 +1,5 @@
 # Laravel Multitenancy
 [![Latest Stable Version](https://poser.pugx.org/acdphp/laravel-multitenancy/v)](https://packagist.org/packages/acdphp/laravel-multitenancy)
-[![License](http://poser.pugx.org/acdphp/laravel-multitenancy/license)](https://packagist.org/packages/acdphp/laravel-multitenancy)
 
 Laravel multi-tenancy model scoping and automatic tenancy assignment.
 
@@ -9,11 +8,7 @@ Laravel multi-tenancy model scoping and automatic tenancy assignment.
 composer require acdphp/laravel-multitenancy
 ```
 
-## Modifying config
-- By default, it will look for `\App\Models\Company::class` as `tenant_class` that has `id` as `tenant_primary_key`. Relatively, it will use `company_id` column of the models that belongs to a tenant as `tenant_ref_key`. If this isn't the case, you may override the config by publishing it.
-```sh
-php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvider"
-```
+This package will resolve the current tenant based on the resolved authenticated user's tenant key value.
 
 ## Model Usage
 ```php
@@ -23,6 +18,19 @@ class YourModel extends Model
 {
     use BelongsToTenant;
 }
+```
+
+## Manually setting the tenant
+- In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned.
+```php
+use Acdphp\Multitenancy\Facades\Tenancy;
+
+// Create company and set as tenant
+$company = Company::create(...);
+Tenancy::setTenantId($company->id);
+
+// Then proceed to create a user
+User::create(...);
 ```
 
 ## Bypassing Scope
@@ -51,17 +59,15 @@ Tenancy::bypassCreating();
 Route::middleware(['tenancy.creating.bypass'])->post('your-route', ...);
 ```
 
-## Manually setting tenant
-- In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned using setTenant.
+## Modifying config
+- Publish config
+```sh
+php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvider"
+```
+
+- Change column name to look for tenancy in models.
 ```php
-use Acdphp\Multitenancy\Facades\Tenancy;
-
-// Create company and set as tenant
-$company = Company::create(...);
-Tenancy::setTenant($company);
-
-// Then proceed to create a user
-User::create(...);
+'tenant_ref_key' => 'company_id',
 ```
 
 ## License

@@ -2,57 +2,30 @@
 
 namespace Acdphp\Multitenancy;
 
-use Acdphp\Multitenancy\Exceptions\InvalidTenantClassException;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-
 class Tenancy
 {
-    protected Model $tenant;
+    protected int|string $tenantId;
 
     protected bool $scopeBypass = false;
 
     protected bool $creatingBypass = false;
 
-    public function tenant(): Model
-    {
-        return $this->tenant;
-    }
-
     public function tenantId(): int|string
     {
-        return $this->tenant()->{config('multitenancy.tenant_primary_key')};
+        return $this->tenantId;
     }
 
-    /**
-     * @throws InvalidTenantClassException
-     */
-    public function setTenant(Model $model): self
+    public function setTenantId(int|string $tenantId): self
     {
-        if (! is_a($model, config('multitenancy.tenant_class'))) {
-            throw new InvalidTenantClassException();
-        }
-
-        $this->tenant = $model;
+        $this->tenantId = $tenantId;
 
         return $this;
     }
 
-    /**
-     * @throws InvalidTenantClassException
-     */
-    public function setTenantFromAuth(Authenticatable $user): self
-    {
-        return $this->setTenant(
-            config('multitenancy.tenant_class')::find(
-                $user->{config('multitenancy.tenant_ref_key')}
-            )
-        );
-    }
-
     public function scopeBypassed(): bool
     {
-        return $this->scopeBypass;
+        return $this->scopeBypass ||
+            (! isset($this->tenantId) && app()->runningInConsole());
     }
 
     public function bypassScope(): void
@@ -62,7 +35,8 @@ class Tenancy
 
     public function creatingBypassed(): bool
     {
-        return $this->creatingBypass;
+        return $this->creatingBypass ||
+            (! isset($this->tenantId) && app()->runningInConsole());
     }
 
     public function bypassCreating(): void

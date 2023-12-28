@@ -13,7 +13,7 @@ class InjectTenancyFromAuth
     public function handle(Request $request, \Closure $next): Response|RedirectResponse|JsonResponse
     {
         if (($user = $request->user())) {
-            Tenancy::setTenantFromAuth($user);
+            Tenancy::setTenantId($user->{config('multitenancy.tenant_ref_key')});
         }
 
         return $next($request);
