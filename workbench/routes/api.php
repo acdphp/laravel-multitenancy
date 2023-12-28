@@ -8,7 +8,7 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
     Route::post('register', 'register');
 
     Route::middleware('auth')->group(function () {
-       Route::get('me', 'me');
+        Route::get('me', 'me');
     });
 });
 
@@ -20,4 +20,3 @@ Route::prefix('somethings')->controller(SomethingController::class)->group(funct
         Route::post('/', 'store');
     });
 });
-

@@ -57,11 +57,11 @@ test('should scope a resource from requesting id', function () {
     $s2 = SomethingFactory::new(['company_id' => CompanyFactory::new()->create()->id])->create();
 
     $this->actingAs($user)
-        ->get('somethings/' . $s1->id)
+        ->get('somethings/'.$s1->id)
         ->assertOk();
 
     $this->actingAs($user)
-        ->get('somethings/' . $s2->id)
+        ->get('somethings/'.$s2->id)
         ->assertNotFound();
 });
 
