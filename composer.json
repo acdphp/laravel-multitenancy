@@ -16,13 +16,22 @@
     "require-dev": {
         "laravel/pint": "^1.13",
         "phpstan/phpstan": "^1.10",
-        "nunomaduro/larastan": "^2.6",
         "ekino/phpstan-banned-code": "^1.0",
-        "orchestra/testbench": "^8.10"
+        "orchestra/testbench": "^8.12",
+        "pestphp/pest": "^2.29",
+        "pestphp/pest-plugin-laravel": "^2.2",
+        "larastan/larastan": "^2.7"
     },
     "autoload": {
         "psr-4": {
-            "Acdphp\\Multitenancy\\": "src"
+            "Acdphp\\Multitenancy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acdphp\\Multitenancy\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/"
         }
     },
     "extra": {
@@ -33,6 +42,31 @@
             "aliases": {
                 "Tenancy": "Acdphp\\Multitenancy\\Facades\\Tenancy"
             }
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/pint",
+            "@php vendor/bin/phpstan analyse"
+        ],
+        "test": [
+            "@php vendor/bin/pest"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }

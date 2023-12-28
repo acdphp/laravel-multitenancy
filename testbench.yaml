@@ -1,0 +1,21 @@
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+  - Acdphp\Multitenancy\TenancyServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+seeders: []
+
+workbench:
+  start: '/'
+  install: true
+  discovers:
+    web: true
+    api: true
+    commands: false
+    components: false
+    views: false
+  build: []
+  assets: []
+  sync: []

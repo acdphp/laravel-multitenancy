@@ -5,6 +5,7 @@ namespace Acdphp\Multitenancy;
 use Acdphp\Multitenancy\Http\Middleware\InjectTenancyFromAuth;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -24,14 +25,14 @@ class TenancyServiceProvider extends BaseServiceProvider
         );
     }
 
-    public function boot(Router $router): void
+    public function boot(Router $router, Kernel $kernel): void
     {
         // Middleware alias
         $router->aliasMiddleware('tenancy.scope.bypass', TenancyScopeBypass::class);
         $router->aliasMiddleware('tenancy.creating.bypass', TenancyCreatingBypass::class);
 
         // Append middleware
-        $router->pushMiddlewareToGroup('api', InjectTenancyFromAuth::class);
+        $kernel->pushMiddleware(InjectTenancyFromAuth::class);
 
         // Publish config
         $this->publishes([
