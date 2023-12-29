@@ -12,7 +12,7 @@ This package will resolve the current tenant based on the resolved authenticated
 
 ## Model Usage
 ```php
-use \Acdphp\Multitenancy\Traits;
+use \Acdphp\Multitenancy\Traits\BelongsToTenant;
 
 class YourModel extends Model
 {
@@ -25,7 +25,7 @@ class YourModel extends Model
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
-// Create company and set as tenant
+// Create a company and set it as tenant
 $company = Company::create(...);
 Tenancy::setTenantId($company->id);
 
@@ -47,7 +47,7 @@ Route::middleware(['tenancy.scope.bypass'])->post('/login', ...);
 ```
 
 ## Bypassing Automatic Tenancy Assignment
-- It's also possible to bypass auto-tenancy assignment.
+- It's also possible to bypass auto-tenancy assignments.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
@@ -65,7 +65,7 @@ Route::middleware(['tenancy.creating.bypass'])->post('your-route', ...);
 php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvider"
 ```
 
-- Change column name to look for tenancy in models.
+- Change the column name to look for tenancy in models.
 ```php
 'tenant_ref_key' => 'company_id',
 ```
