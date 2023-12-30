@@ -31,8 +31,7 @@ class Tenancy
 
     public function scopeBypassed(): bool
     {
-        return $this->scopeBypass ||
-            (! $this->tenantId() && app()->runningInConsole() && ! app()->runningUnitTests());
+        return $this->scopeBypass || ! $this->tenantId();
     }
 
     public function bypassScope(): void
@@ -42,8 +41,7 @@ class Tenancy
 
     public function creatingBypassed(): bool
     {
-        return $this->creatingBypass ||
-            (! $this->tenantId() && app()->runningInConsole() && ! app()->runningUnitTests());
+        return $this->creatingBypass || ! $this->tenantId();
     }
 
     public function bypassCreating(): void

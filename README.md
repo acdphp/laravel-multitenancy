@@ -34,7 +34,7 @@ User::create(...);
 ```
 
 ## Bypassing Scope
-- Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant but on public endpoints. Example when logging in.
+- Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
@@ -43,7 +43,7 @@ Tenancy::bypassScope();
 
 - Or by using the middleware.
 ```php
-Route::middleware(['tenancy.scope.bypass'])->post('/login', ...);
+Route::middleware(['tenancy.scope.bypass'])->get('/resources/all', ...);
 ```
 
 ## Bypassing Automatic Tenancy Assignment
