@@ -2,11 +2,12 @@
 
 namespace Acdphp\Multitenancy;
 
-use Acdphp\Multitenancy\Http\Middleware\InjectTenancyFromAuth;
+use Acdphp\Multitenancy\Facades\Tenancy as TenancyFacade;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class TenancyServiceProvider extends BaseServiceProvider
@@ -32,7 +33,9 @@ class TenancyServiceProvider extends BaseServiceProvider
         $router->aliasMiddleware('tenancy.creating.bypass', TenancyCreatingBypass::class);
 
         // Append middleware
-        $kernel->pushMiddleware(InjectTenancyFromAuth::class);
+        TenancyFacade::setTenantIdResolver(static function () {
+            return Auth::hasUser() ? Auth::user()->{config('multitenancy.tenant_ref_key')} : null;
+        });
 
         // Publish config
         $this->publishes([
