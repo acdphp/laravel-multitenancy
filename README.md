@@ -27,7 +27,7 @@ use Acdphp\Multitenancy\Facades\Tenancy;
 
 // Create a company and set it as tenant
 $company = Company::create(...);
-Tenancy::setTenantId($company->id);
+Tenancy::setTenantIdResolver(fn () => $company->id);
 
 // Then proceed to create a user
 User::create(...);

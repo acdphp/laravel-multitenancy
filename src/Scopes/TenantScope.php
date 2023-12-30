@@ -20,7 +20,7 @@ class TenantScope implements Scope
 
     public function creating(Model $model): void
     {
-        if (Tenancy::creatingBypassed()) {
+        if (Tenancy::creatingBypassed() || isset($model->{$this->getModelTenantKey()})) {
             return;
         }
 

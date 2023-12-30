@@ -16,7 +16,7 @@ class UserController extends Controller
         $company = Company::create($request->input('company'));
 
         // Set tenant from created company
-        Tenancy::setTenantId($company->id);
+        Tenancy::setTenantIdResolver(static fn () => $company->id);
 
         // Then proceed to create a user
         return User::create($request->except('company'));

@@ -2,22 +2,29 @@
 
 namespace Acdphp\Multitenancy;
 
+use Closure;
+
 class Tenancy
 {
-    protected int|string $tenantId;
-
     protected bool $scopeBypass = false;
 
     protected bool $creatingBypass = false;
 
-    public function tenantId(): int|string
+    protected Closure $tenantIdResolver;
+
+    public function tenantId(): int|string|null
     {
-        return $this->tenantId;
+        return call_user_func($this->getTenantIdResolver());
     }
 
-    public function setTenantId(int|string $tenantId): self
+    public function getTenantIdResolver(): Closure
     {
-        $this->tenantId = $tenantId;
+        return $this->tenantIdResolver;
+    }
+
+    public function setTenantIdResolver(Closure $tenantIdResolver): self
+    {
+        $this->tenantIdResolver = $tenantIdResolver;
 
         return $this;
     }
@@ -25,7 +32,7 @@ class Tenancy
     public function scopeBypassed(): bool
     {
         return $this->scopeBypass ||
-            (! isset($this->tenantId) && app()->runningInConsole());
+            (! $this->tenantId() && app()->runningInConsole() && ! app()->runningUnitTests());
     }
 
     public function bypassScope(): void
@@ -36,7 +43,7 @@ class Tenancy
     public function creatingBypassed(): bool
     {
         return $this->creatingBypass ||
-            (! isset($this->tenantId) && app()->runningInConsole());
+            (! $this->tenantId() && app()->runningInConsole() && ! app()->runningUnitTests());
     }
 
     public function bypassCreating(): void
