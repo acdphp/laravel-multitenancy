@@ -61,7 +61,7 @@
         ],
         "lint": [
             "@php vendor/bin/pint",
-            "@php vendor/bin/phpstan analyse"
+            "@php vendor/bin/phpstan"
         ],
         "test": [
             "@php vendor/bin/pest"
