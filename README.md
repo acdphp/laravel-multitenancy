@@ -10,15 +10,44 @@ composer require acdphp/laravel-multitenancy
 
 This package will resolve the current tenant based on the resolved authenticated user's tenant key value.
 
-## Model Usage
+## Example Usage
 ```php
 use \Acdphp\Multitenancy\Traits\BelongsToTenant;
 
-class YourModel extends Model
+class Site extends Model
 {
     use BelongsToTenant;
+    
+    protected $fillable = [
+        'company_id',
+        ...
+    ];
 }
 ```
+
+## Scoping from parent relationship
+```php
+use \Acdphp\Multitenancy\Traits\BelongsToTenant;
+
+class Product extends Model
+{
+    use BelongsToTenant;
+    
+    protected $fillable = [
+        'site_id',
+        ...
+    ];
+    
+    protected string $scopeTenancyFromRelation = 'site'; // Define to scope from parent model
+    
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class);
+    }
+}
+```
+
+---
 
 ## Manually setting the tenant
 - In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned.
@@ -68,6 +97,13 @@ php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvide
 - Change the column name to look for tenancy in models.
 ```php
 'tenant_ref_key' => 'company_id',
+```
+
+---
+
+## Testing
+```sh
+./vendor/bin/pest
 ```
 
 ## License

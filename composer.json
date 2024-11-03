@@ -41,7 +41,10 @@
             ],
             "aliases": {
                 "Tenancy": "Acdphp\\Multitenancy\\Facades\\Tenancy"
-            }
+            },
+            "dont-discover": [
+                "*"
+            ]
         }
     },
     "scripts": {

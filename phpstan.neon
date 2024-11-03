@@ -7,9 +7,9 @@ parameters:
     paths:
         - src
     level: 6
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
-    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - identifier: missingType.generics
     banned_code:
         nodes:
             - { type: Stmt_Echo, functions: null }

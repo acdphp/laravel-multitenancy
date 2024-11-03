@@ -5,7 +5,7 @@ namespace Workbench\App\Models;
 use Acdphp\Multitenancy\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 
-class Something extends Model
+class Site extends Model
 {
     use BelongsToTenant;
 
