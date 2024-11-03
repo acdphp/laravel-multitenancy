@@ -39,11 +39,8 @@ jobs:
       - name: Validate composer.lock
         run: composer validate --strict
 
-      - name: Run pint
-        run: vendor/bin/pint --test
+      - name: Run lint and analyse
+        run: composer lint
 
-      - name: Run pest
-        run: vendor/bin/pest
-
-      - name: Run Phpstan
-        run: vendor/bin/phpstan --no-progress --debug --memory-limit=1G
+      - name: Run test
+        run: composer test

@@ -3,21 +3,21 @@
 namespace Workbench\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Workbench\App\Models\Something;
+use Workbench\App\Models\Product;
 
 /**
- * @template TModel of \Workbench\App\Models\Something
+ * @template TModel of \Workbench\App\Models\Product
  *
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
  */
-class SomethingFactory extends Factory
+class ProductFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var class-string<TModel>
      */
-    protected $model = Something::class;
+    protected $model = Product::class;
 
     /**
      * Define the model's default state.
@@ -27,8 +27,7 @@ class SomethingFactory extends Factory
     public function definition(): array
     {
         return [
-            'foo' => fake()->word,
-            'company_id' => CompanyFactory::new()->create()->id,
+            'site_id' => SiteFactory::new()->create()->id,
         ];
     }
 }

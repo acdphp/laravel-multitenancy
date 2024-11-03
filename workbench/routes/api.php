@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Workbench\App\Http\Controllers\SomethingController;
+use Workbench\App\Http\Controllers\ProductController;
+use Workbench\App\Http\Controllers\SiteController;
 use Workbench\App\Http\Controllers\UserController;
 
 Route::prefix('users')->controller(UserController::class)->group(function () {
@@ -12,11 +13,20 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
     });
 });
 
-Route::prefix('somethings')->controller(SomethingController::class)->group(function () {
+Route::prefix('sites')->controller(SiteController::class)->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', 'index');
         Route::middleware('tenancy.scope.bypass')->get('/all', 'index');
-        Route::get('/{something}', 'show');
+        Route::get('/{site}', 'show');
+        Route::post('/', 'store');
+    });
+});
+
+Route::prefix('products')->controller(ProductController::class)->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::get('/', 'index');
+        Route::middleware('tenancy.scope.bypass')->get('/all', 'index');
+        Route::get('/{product}', 'show');
         Route::post('/', 'store');
     });
 });

@@ -16,7 +16,7 @@ class TenancyServiceProvider extends BaseServiceProvider
     {
         // Register Tenancy
         $this->app->singleton('tenancy', function () {
-            return new Tenancy();
+            return new Tenancy;
         });
 
         // Config merge
