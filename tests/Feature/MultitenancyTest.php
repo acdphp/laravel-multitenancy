@@ -92,3 +92,24 @@ test('allow scope bypass resources from requesting id', function () {
         ->assertOk()
         ->assertJsonCount(6);
 });
+
+test('allow scope bypass resource', function () {
+    $user = UserFactory::new()->make();
+    $ownSite = SiteFactory::new(['company_id' => $user->company_id])->create();
+    $otherCompanySite = SiteFactory::new(['company_id' => CompanyFactory::new()->create()->id])->create();
+
+    // Scope bypass works on self
+    $this->actingAs($user)
+        ->get('sites/' . $ownSite->id . '/by-pass-example')
+        ->assertOk();
+
+    // Scope bypass works on other
+    $this->actingAs($user)
+        ->get('sites/' . $otherCompanySite->id . '/by-pass-example')
+        ->assertOk();
+
+    // Fails on other without bypass
+    $this->actingAs($user)
+        ->get('sites/' . $otherCompanySite->id)
+        ->assertOk();
+});

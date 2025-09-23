@@ -18,6 +18,7 @@ Route::prefix('sites')->controller(SiteController::class)->group(function () {
         Route::get('/', 'index');
         Route::middleware('tenancy.scope.bypass')->get('/all', 'index');
         Route::get('/{site}', 'show');
+        Route::middleware('tenancy.scope.bypass')->get('/{site}/by-pass-example', 'show');
         Route::post('/', 'store');
     });
 });
