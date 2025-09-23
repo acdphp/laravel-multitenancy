@@ -5,6 +5,7 @@ namespace Acdphp\Multitenancy;
 use Acdphp\Multitenancy\Facades\Tenancy as TenancyFacade;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
+use Acdphp\Multitenancy\Overrides\SubstituteBindings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,9 @@ class TenancyServiceProvider extends BaseServiceProvider
 
     public function boot(Router $router, Kernel $kernel): void
     {
+        // Override SubstituteBindings to allow for tenant scope
+        $this->app->alias(SubstituteBindings::class, \Illuminate\Routing\Middleware\SubstituteBindings::class);
+
         // Middleware alias
         $router->aliasMiddleware('tenancy.scope.bypass', TenancyScopeBypass::class);
         $router->aliasMiddleware('tenancy.creating.bypass', TenancyCreatingBypass::class);
