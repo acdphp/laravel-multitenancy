@@ -19,9 +19,14 @@ Change the column name to look for tenancy in models.
 'tenant_ref_key' => 'company_id',
 ```
 
-By default, the tenant id is automatically resolved using the authenticated user's tenant reference key defined above. You can disable this and [define your own resolver logic](#manually-setting-the-tenant) in AppServiceProvider or any service provider.
+By default, the tenant id is automatically resolved using the authenticated user's tenant ref key defined above. You can disable this and [define your own resolver logic](#manually-setting-the-tenant) in AppServiceProvider or any service provider.
 ```php
 'auto_resolve_tenant_id' => true,
+```
+
+By default, the tenant id is automatically assigned during creation using the resolved tenancy defined above. You can disable this and manually set tenant id as you normally would.
+```php
+'auto_assign_tenant_id' => true,
 ```
 
 ## Example Usage

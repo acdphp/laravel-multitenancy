@@ -27,4 +27,23 @@ return [
     |
     */
     'auto_resolve_tenant_id' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto Assign Tenant Id
+    |--------------------------------------------------------------------------
+    |
+    | By default, the tenant id is automatically assigned to models that use the BelongsToTenant trait and have direct relation to the tenant model during creation.
+    | You can disable this globally by setting this option to false.
+    | If disabled, you must manually set the tenant id as you would normally set it on model creation.
+    |
+    | Example:
+    |
+    | YourModel::create([
+    |     'company_id' => // Assign tenant id manually,
+    |     // other attributes...
+    | ]);
+    |
+    */
+    'auto_assign_tenant_id' => true,
 ];

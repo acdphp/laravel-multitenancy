@@ -3,6 +3,7 @@
 namespace Acdphp\Multitenancy\Tests\Feature;
 
 use Acdphp\Multitenancy\Tests\TestCase;
+use Illuminate\Support\Facades\Config;
 use Workbench\Database\Factories\CompanyFactory;
 use Workbench\Database\Factories\ProductFactory;
 use Workbench\Database\Factories\SiteFactory;
@@ -39,6 +40,47 @@ class MultitenancyTest extends TestCase
             ->assertCreated();
 
         $this->assertDatabaseHas('sites', [
+            'id' => $res->json('id'),
+            'company_id' => $res->json('company_id'),
+        ]);
+    }
+
+    public function test_not_automatically_set_tenant_when_globally_defined_in_config(): void
+    {
+        Config::set('multitenancy.auto_assign_tenant_id', false);
+
+        $user = UserFactory::new()->make();
+
+        // Should error due to missing tenant id
+        $this->expectExceptionMessage('NOT NULL constraint failed: sites.company_id');
+        $res = $this->actingAs($user)
+            ->post('sites', [
+                'foo' => 'bar',
+            ]);
+
+        $this->assertDatabaseMissing('sites', [
+            'id' => $res->json('id'),
+            'company_id' => $res->json('company_id'),
+        ]);
+    }
+
+    public function test_not_automatically_set_tenant_when_defined_only_in_model(): void
+    {
+        $user = UserFactory::new()->make();
+
+        $this->actingAs($user)
+            ->post('sites', [
+                'foo' => 'bar',
+            ])->assertCreated();
+
+        // Should error due to missing tenant id
+        $this->expectExceptionMessage('NOT NULL constraint failed: sites.company_id');
+        $res = $this->actingAs($user)
+            ->post('sites/no-auto-assign', [
+                'foo' => 'bar',
+            ]);
+
+        $this->assertDatabaseMissing('sites', [
             'id' => $res->json('id'),
             'company_id' => $res->json('company_id'),
         ]);
