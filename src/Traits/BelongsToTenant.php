@@ -5,9 +5,6 @@ namespace Acdphp\Multitenancy\Traits;
 use Acdphp\Multitenancy\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string $scopeTenancyFromRelation
- */
 trait BelongsToTenant
 {
     public function initializeBelongsToTenant(): void
@@ -23,10 +20,31 @@ trait BelongsToTenant
     {
         $scope = new TenantScope;
 
+        // Scoping
         static::addGlobalScope($scope);
 
+        // Auto-assign tenant ID on creating
         static::creating(static function (Model $model) use ($scope) {
-            if ($model->getScopeTenancyFromRelation()) {
+            // Global config to disable auto-assigning tenant ID
+            if (config('multitenancy.auto_assign_tenant_id') === false) {
+                return;
+            }
+
+            /**
+             * Skip if model is scoped from relationship
+             *
+             * @uses getScopeTenancyFromRelation()
+             */
+            if (call_user_func([$model, 'getScopeTenancyFromRelation'])) {
+                return;
+            }
+
+            /**
+             * Skip if model has autoAssignTenantId set to false
+             *
+             * @uses getAutoAssignTenantId()
+             */
+            if (call_user_func([$model, 'getAutoAssignTenantId']) === false) {
                 return;
             }
 
@@ -37,5 +55,10 @@ trait BelongsToTenant
     public function getScopeTenancyFromRelation(): ?string
     {
         return $this->scopeTenancyFromRelation ?? null;
+    }
+
+    public function getAutoAssignTenantId(): bool
+    {
+        return $this->autoAssignTenantId ?? true;
     }
 }

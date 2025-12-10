@@ -4,7 +4,7 @@ namespace Acdphp\Multitenancy;
 
 use Closure;
 
-class Tenancy
+class TenancyManager
 {
     protected bool $scopeBypass = false;
 

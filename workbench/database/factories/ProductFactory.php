@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\Product;
 
 /**
- * @template TModel of \Workbench\App\Models\Product
+ * @template TModel of Product
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class ProductFactory extends Factory
 {
@@ -20,11 +20,9 @@ class ProductFactory extends Factory
     protected $model = Product::class;
 
     /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
-    public function definition(): array
+    public function definition()
     {
         return [
             'site_id' => SiteFactory::new()->create()->id,

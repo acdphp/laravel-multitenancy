@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\User;
 
 /**
- * @template TModel of \Workbench\App\Models\User
+ * @template TModel of User
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class UserFactory extends Factory
 {
@@ -20,15 +20,13 @@ class UserFactory extends Factory
     protected $model = User::class;
 
     /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'name' => fake()->name,
-            'email' => fake()->email,
+            'name' => $this->faker->name,
+            'email' => $this->faker->email,
             'company_id' => CompanyFactory::new()->create()->id,
         ];
     }

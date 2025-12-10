@@ -15,9 +15,9 @@ class TenancyServiceProvider extends BaseServiceProvider
 {
     public function register(): void
     {
-        // Register Tenancy
+        // Register TenancyManager
         $this->app->singleton('tenancy', function () {
-            return new Tenancy;
+            return new TenancyManager;
         });
 
         // Config merge
@@ -36,10 +36,12 @@ class TenancyServiceProvider extends BaseServiceProvider
         $router->aliasMiddleware('tenancy.scope.bypass', TenancyScopeBypass::class);
         $router->aliasMiddleware('tenancy.creating.bypass', TenancyCreatingBypass::class);
 
-        // Append middleware
-        TenancyFacade::setTenantIdResolver(static function () {
-            return Auth::hasUser() ? Auth::user()->{config('multitenancy.tenant_ref_key')} : null;
-        });
+        // Resolve tenant id from authenticated user if enabled
+        if (config('multitenancy.auto_resolve_tenant_id', true)) {
+            TenancyFacade::setTenantIdResolver(static function () {
+                return Auth::hasUser() ? Auth::user()->{config('multitenancy.tenant_ref_key')} : null;
+            });
+        }
 
         // Publish config
         $this->publishes([
