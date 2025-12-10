@@ -2,10 +2,11 @@
 
 namespace Acdphp\Multitenancy\Facades;
 
+use Acdphp\Multitenancy\TenancyManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @mixin \Acdphp\Multitenancy\Tenancy
+ * @mixin TenancyManager
  */
 class Tenancy extends Facade
 {

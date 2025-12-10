@@ -8,7 +8,21 @@ Laravel multi-tenancy model scoping and automatic tenancy assignment.
 composer require acdphp/laravel-multitenancy
 ```
 
-This package will resolve the current tenant based on the resolved authenticated user's tenant key value.
+## Configuration
+Publish config
+```sh
+php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvider"
+```
+
+Change the column name to look for tenancy in models.
+```php
+'tenant_ref_key' => 'company_id',
+```
+
+By default, the tenant id is automatically resolved using the authenticated user's tenant reference key defined above. You can disable this and [define your own resolver logic](#manually-setting-the-tenant) in AppServiceProvider or any service provider.
+```php
+'auto_resolve_tenant_id' => true,
+```
 
 ## Example Usage
 ```php
@@ -50,7 +64,7 @@ class Product extends Model
 ---
 
 ## Manually setting the tenant
-- In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned.
+In the registration, for example, tenancy isn't set because it's a non-authenticated endpoint. The tenant has to be manually assigned.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
@@ -63,47 +77,55 @@ User::create(...);
 ```
 
 ## Bypassing Scope
-- Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant.
+Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
 Tenancy::bypassScope();
 ```
 
-- Or by using the middleware.
+Or by using the middleware.
 ```php
 Route::middleware(['tenancy.scope.bypass'])->get('/resources/all', ...);
 ```
 
 ## Bypassing Automatic Tenancy Assignment
-- It's also possible to bypass auto-tenancy assignments.
+It's also possible to bypass auto-tenancy assignments.
 ```php
 use Acdphp\Multitenancy\Facades\Tenancy;
 
 Tenancy::bypassCreating();
 ```
 
-- Or by using the middleware.
+Or by using the middleware.
 ```php
 Route::middleware(['tenancy.creating.bypass'])->post('your-route', ...);
-```
-
-## Modifying config
-- Publish config
-```sh
-php artisan vendor:publish --provider="Acdphp\Multitenancy\TenancyServiceProvider"
-```
-
-- Change the column name to look for tenancy in models.
-```php
-'tenant_ref_key' => 'company_id',
 ```
 
 ---
 
 ## Testing
 ```sh
-./vendor/bin/pest
+composer test
+
+# with docker-compose
+docker-compose run --rm test-php84
+```
+
+## Linting
+```sh
+composer pint
+
+# with docker-compose
+docker-compose run --rm pint
+```
+
+## Lint check and static analysis
+```sh
+composer lint-check
+
+# with docker-compose
+docker-compose run --rm lint-check
 ```
 
 ## License

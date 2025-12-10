@@ -8,3 +8,5 @@
 clover.xml
 /build
 composer.lock
+composer-local.json
+composer-local.lock

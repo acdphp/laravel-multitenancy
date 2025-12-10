@@ -26,7 +26,7 @@ trait BelongsToTenant
         static::addGlobalScope($scope);
 
         static::creating(static function (Model $model) use ($scope) {
-            if ($model->getScopeTenancyFromRelation()) {
+            if (call_user_func([$model, 'getScopeTenancyFromRelation'])) {
                 return;
             }
 

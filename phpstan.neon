@@ -6,6 +6,8 @@ parameters:
     checkModelProperties: true
     paths:
         - src
+        - tests
+        - workbench
     level: 6
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
