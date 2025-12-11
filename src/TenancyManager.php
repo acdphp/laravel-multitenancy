@@ -6,6 +6,10 @@ use Closure;
 
 class TenancyManager
 {
+    protected int|string|null $tenantId;
+
+    protected bool $tenantIdWasResolved = false;
+
     protected bool $scopeBypass = false;
 
     protected bool $creatingBypass = false;
@@ -14,7 +18,16 @@ class TenancyManager
 
     public function tenantId(): int|string|null
     {
-        return call_user_func($this->getTenantIdResolver());
+        if (! isset($this->tenantIdResolver)) {
+            return null;
+        }
+
+        if (! $this->tenantIdWasResolved) {
+            $this->tenantIdWasResolved = true;
+            $this->tenantId = call_user_func($this->getTenantIdResolver());
+        }
+
+        return $this->tenantId;
     }
 
     public function getTenantIdResolver(): Closure
@@ -25,6 +38,8 @@ class TenancyManager
     public function setTenantIdResolver(Closure $tenantIdResolver): self
     {
         $this->tenantIdResolver = $tenantIdResolver;
+
+        $this->forgetTenant();
 
         return $this;
     }
@@ -47,5 +62,11 @@ class TenancyManager
     public function bypassCreating(): void
     {
         $this->creatingBypass = true;
+    }
+
+    public function forgetTenant(): void
+    {
+        $this->tenantIdWasResolved = false;
+        $this->tenantId = null;
     }
 }

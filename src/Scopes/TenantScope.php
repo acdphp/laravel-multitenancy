@@ -16,6 +16,11 @@ class TenantScope implements Scope
             return;
         }
 
+        // Check if this is the base/initial query model
+        if ($this->isEagerLoadedRelation($builder, $model)) {
+            return;
+        }
+
         if ($this->getModelScopeTenancyFromRelation($model)) {
             $this->scopeFromRelation($builder, $model);
 
@@ -67,5 +72,28 @@ class TenantScope implements Scope
          * @uses BelongsToTenant::getScopeTenancyFromRelation
          */
         return $model->getScopeTenancyFromRelation();
+    }
+
+    protected function isBaseQuery(Builder $builder, Model $model): bool
+    {
+        // If no joins exist, this is the base query
+        return empty($builder->getQuery()->joins);
+    }
+
+    // Detect if the builder is being used for eager-loaded relation constraints
+    protected function isEagerLoadedRelation(Builder $builder, Model $model): bool
+    {
+        $query = $builder->getQuery();
+
+        // When eager loading, Laravel typically adds Nested where constraints for relation queries.
+        if (! empty($query->wheres)) {
+            foreach ($query->wheres as $where) {
+                if (isset($where['type']) && $where['type'] === 'InRaw') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
