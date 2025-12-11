@@ -2,6 +2,7 @@
 
 namespace Acdphp\Multitenancy;
 
+use Acdphp\Multitenancy\Facades\Tenancy;
 use Acdphp\Multitenancy\Facades\Tenancy as TenancyFacade;
 use Acdphp\Multitenancy\Http\Middleware\TenancyCreatingBypass;
 use Acdphp\Multitenancy\Http\Middleware\TenancyScopeBypass;
@@ -39,7 +40,14 @@ class TenancyServiceProvider extends BaseServiceProvider
         // Resolve tenant id from authenticated user if enabled
         if (config('multitenancy.auto_resolve_tenant_id', true)) {
             TenancyFacade::setTenantIdResolver(static function () {
-                return Auth::hasUser() ? Auth::user()->{config('multitenancy.tenant_ref_key')} : null;
+                // No user yet - don't cache, keep checking
+                if (! Auth::hasUser()) {
+                    Tenancy::forgetTenant();
+
+                    return null;
+                }
+
+                return Auth::user()->{config('multitenancy.tenant_ref_key')} ?? null;
             });
         }
 
