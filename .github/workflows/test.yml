@@ -28,7 +28,7 @@ jobs:
         run: composer validate --strict
 
       - name: Run lint and static analysis
-        run: composer lint-check
+        run: composer lint
 
   test:
     name: Test P${{ matrix.php }} - L${{ matrix.laravel }}
