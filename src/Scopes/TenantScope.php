@@ -16,18 +16,16 @@ class TenantScope implements Scope
             return;
         }
 
-        // Check if this is the base/initial query model
-        if ($this->isEagerLoadedRelation($builder, $model)) {
+        // Don't apply scope if the query is being built for eager-loaded relation constraints
+        if ($this->isLoadedFromScopingRelation($builder, $model)) {
             return;
         }
 
         if ($this->getModelScopeTenancyFromRelation($model)) {
             $this->scopeFromRelation($builder, $model);
-
-            return;
+        } else {
+            $this->scope($builder);
         }
-
-        $this->scope($builder);
     }
 
     public function creating(Model $model): void
@@ -74,26 +72,65 @@ class TenantScope implements Scope
         return $model->getScopeTenancyFromRelation();
     }
 
-    protected function isBaseQuery(Builder $builder, Model $model): bool
-    {
-        // If no joins exist, this is the base query
-        return empty($builder->getQuery()->joins);
-    }
-
-    // Detect if the builder is being used for eager-loaded relation constraints
-    protected function isEagerLoadedRelation(Builder $builder, Model $model): bool
+    protected function isLoadedFromScopingRelation(Builder $builder, Model $model): bool
     {
         $query = $builder->getQuery();
+        $table = $model->getTable();
+        $scopingForeignKey = $this->getScopingRelationForeignKey($model);
 
-        // When eager loading, Laravel typically adds Nested where constraints for relation queries.
-        if (! empty($query->wheres)) {
-            foreach ($query->wheres as $where) {
-                if (isset($where['type']) && $where['type'] === 'InRaw') {
-                    return true;
+        if (! $table || ! $scopingForeignKey || empty($query->wheres)) {
+            return false;
+        }
+
+        $matchesForeignKey = static function (array $where, string $table, string $key): bool {
+            if (! isset($where['type'])) {
+                return false;
+            }
+
+            $column = $table.'.'.$key;
+
+            return (
+                in_array($where['type'], ['InRaw', 'In', 'Basic'], true) &&
+                isset($where['column']) &&
+                $where['column'] === $column
+            ) || (
+                $where['type'] === 'Column' &&
+                isset($where['second']) &&
+                $where['second'] === $column
+            );
+        };
+
+        foreach ($query->wheres as $where) {
+            if ($matchesForeignKey($where, $table, $scopingForeignKey)) {
+                return true;
+            }
+
+            if ($where['type'] === 'Nested' && isset($where['query'])) {
+                foreach ($where['query']->wheres ?? [] as $nestedWhere) {
+                    if ($matchesForeignKey($nestedWhere, $table, $scopingForeignKey)) {
+                        return true;
+                    }
+                }
+            }
+
+            if (in_array($where['type'], ['Exists', 'NotExists'], true) && isset($where['query'])) {
+                foreach ($where['query']->wheres ?? [] as $existsWhere) {
+                    if ($matchesForeignKey($existsWhere, $table, $scopingForeignKey)) {
+                        return true;
+                    }
                 }
             }
         }
 
         return false;
+    }
+
+    protected function getScopingRelationForeignKey(Model $model): ?string
+    {
+        if (! ($relation = $this->getModelScopeTenancyFromRelation($model))) {
+            return null;
+        }
+
+        return $model->$relation()->getForeignKeyName();
     }
 }
