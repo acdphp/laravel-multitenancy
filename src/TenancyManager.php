@@ -6,7 +6,7 @@ use Closure;
 
 class TenancyManager
 {
-    protected int|string|null $tenantId;
+    protected int|string|null $tenantId = null;
 
     protected bool $tenantIdWasResolved = false;
 
