@@ -117,21 +117,23 @@ composer test
 docker-compose run --rm test-php84
 ```
 
-## Linting
+## Linting and static analysis
 ```sh
-composer pint
+composer lint
 
 # with docker-compose
-docker-compose run --rm pint
+docker-compose run --rm lint
 ```
 
-## Lint check and static analysis
+## Lint Fix
 ```sh
-composer lint-check
+composer lint-fix
 
 # with docker-compose
-docker-compose run --rm lint-check
+docker-compose run --rm lint-fix
 ```
+
+---
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE) for more information.

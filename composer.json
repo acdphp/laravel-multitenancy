@@ -59,10 +59,10 @@
             "@build",
             "@php vendor/bin/testbench serve"
         ],
-        "pint": [
+        "lint-fix": [
             "@php vendor/bin/pint"
         ],
-        "lint-check": [
+        "lint": [
             "@php vendor/bin/pint --test --parallel",
             "@php vendor/bin/phpstan analyse -n --memory-limit=1G"
         ],

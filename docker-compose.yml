@@ -15,7 +15,7 @@ x-test-service: &test-service
      composer test"
 
 services:
-  pint:
+  lint-fix:
     <<: *test-service
     image: php:8.4-cli
     command: >
@@ -26,9 +26,9 @@ services:
        rm composer-setup.php &&
        rm -f composer.lock &&
        composer update --prefer-stable --no-interaction &&
-       composer pint"
+       composer lint-fix"
 
-  lint-check:
+  lint:
     <<: *test-service
     image: php:8.4-cli
     command: >
@@ -39,7 +39,7 @@ services:
        rm composer-setup.php &&
        rm -f composer.lock &&
        composer update --prefer-stable --no-interaction &&
-       composer lint-check"
+       composer lint"
 
   test-php80:
     <<: *test-service
