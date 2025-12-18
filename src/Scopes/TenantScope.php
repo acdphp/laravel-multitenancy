@@ -44,6 +44,9 @@ class TenantScope implements Scope
     protected function scopeFromRelation(Builder $builder, Model $model): void
     {
         $builder->whereHas($this->getModelScopeTenancyFromRelation($model), function (Builder $builder) {
+            // Remove this scope from the subquery since whereHas already triggers it
+            $builder->withoutGlobalScope(self::class);
+
             if ($this->getModelScopeTenancyFromRelation($builder->getModel())) {
                 $this->scopeFromRelation($builder, $builder->getModel());
 
