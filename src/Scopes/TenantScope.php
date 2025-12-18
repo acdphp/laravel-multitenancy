@@ -16,7 +16,6 @@ class TenantScope implements Scope
             return;
         }
 
-        // Don't apply scope if the query is being built for eager-loaded relation constraints
         if ($this->isLoadedFromScopingRelation($builder, $model)) {
             return;
         }
@@ -72,6 +71,12 @@ class TenantScope implements Scope
         return $model->getScopeTenancyFromRelation();
     }
 
+    /**
+     * Determine if the query is being loaded from a scoping relation.
+     * Example: Product scoped from Site, Site scoped from Company.
+     * Site::with('products') - products are loaded from the Site relation; we know the relation context, so no scope applies.
+     * Product::with('site') - site is not scoped from product; there's no way to know the relation context, so scope applies.
+     */
     protected function isLoadedFromScopingRelation(Builder $builder, Model $model): bool
     {
         $query = $builder->getQuery();
