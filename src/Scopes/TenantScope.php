@@ -38,7 +38,17 @@ class TenantScope implements Scope
 
     protected function scope(Builder $builder): void
     {
-        $builder->where($this->getModelTenantKey(), Tenancy::tenantId());
+        $tenantId = Tenancy::scopingTenantId();
+
+        if (empty($tenantId)) {
+            return;
+        }
+
+        if (is_array($tenantId)) {
+            $builder->whereIn($this->getModelTenantKey(), $tenantId);
+        } else {
+            $builder->where($this->getModelTenantKey(), $tenantId);
+        }
     }
 
     protected function scopeFromRelation(Builder $builder, Model $model): void

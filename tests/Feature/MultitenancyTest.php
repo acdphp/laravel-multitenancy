@@ -2,8 +2,10 @@
 
 namespace Acdphp\Multitenancy\Tests\Feature;
 
+use Acdphp\Multitenancy\Facades\Tenancy;
 use Acdphp\Multitenancy\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
+use Workbench\App\Models\Site;
 use Workbench\Database\Factories\CompanyFactory;
 use Workbench\Database\Factories\ProductFactory;
 use Workbench\Database\Factories\SiteFactory;
@@ -171,5 +173,52 @@ class MultitenancyTest extends TestCase
         $this->actingAs($user)
             ->get('sites/'.$otherCompanySite->id)
             ->assertOk();
+    }
+
+    public function test_should_scope_resource_list_with_multiple_ids(): void
+    {
+        $company1 = CompanyFactory::new()->create();
+        $company2 = CompanyFactory::new()->create();
+        $company3 = CompanyFactory::new()->create();
+
+        SiteFactory::new(['company_id' => $company1->id])->count(2)->create();
+        SiteFactory::new(['company_id' => $company2->id])->count(2)->create();
+        SiteFactory::new(['company_id' => $company3->id])->count(2)->create();
+
+        Tenancy::setTenantIdResolver(fn () => $company1->id);
+        Tenancy::setScopingTenantIdResolver(fn () => [$company1->id, $company2->id]);
+
+        $sites = Site::all();
+
+        $this->assertCount(4, $sites);
+        foreach ($sites as $site) {
+            $this->assertContains($site->company_id, [$company1->id, $company2->id]);
+        }
+    }
+
+    public function test_setting_tenant_id_resolver_resets_scoping_tenant_id(): void
+    {
+        $company1 = CompanyFactory::new()->create();
+        $company2 = CompanyFactory::new()->create();
+
+        SiteFactory::new(['company_id' => $company1->id])->count(2)->create();
+        SiteFactory::new(['company_id' => $company2->id])->count(2)->create();
+
+        // Set tenant to company1 but scope to both via custom scoping resolver
+        Tenancy::setTenantIdResolver(fn () => $company1->id);
+        Tenancy::setScopingTenantIdResolver(fn () => [$company1->id, $company2->id]);
+
+        // Verify scoping includes both companies
+        $this->assertCount(4, Site::all());
+
+        // Now change tenant resolver — should reset the custom scoping tenant
+        Tenancy::setTenantIdResolver(fn () => $company1->id);
+
+        // After resetting the tenant resolver, scopingTenantId falls back to tenantId (company1 only)
+        $sites = Site::all();
+        $this->assertCount(2, $sites);
+        foreach ($sites as $site) {
+            $this->assertEquals($company1->id, $site->company_id);
+        }
     }
 }

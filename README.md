@@ -81,6 +81,18 @@ Tenancy::setTenantIdResolver(fn () => $company->id);
 User::create(...);
 ```
 
+## Custom Scoping Tenant ID
+By default, the scoping uses the resolved tenant ID. You can set a custom scoping tenant ID resolver that supports a single value or an array of IDs.
+```php
+use Acdphp\Multitenancy\Facades\Tenancy;
+
+// Scope to a single tenant
+Tenancy::setScopingTenantIdResolver(fn () => $tenantId);
+
+// Scope to multiple tenants
+Tenancy::setScopingTenantIdResolver(fn () => [1, 2, 3]);
+```
+
 ## Bypassing Scope
 Sometimes, it's needed to bypass scoping when accessing a model that belongs to a tenant.
 ```php
@@ -94,6 +106,11 @@ Or by using the middleware.
 Route::middleware(['tenancy.scope.bypass'])->get('/resources/all', ...);
 ```
 
+To re-enable scoping after bypassing:
+```php
+Tenancy::resetScopeBypass();
+```
+
 ## Bypassing Automatic Tenancy Assignment
 It's also possible to bypass auto-tenancy assignments.
 ```php
@@ -105,6 +122,11 @@ Tenancy::bypassCreating();
 Or by using the middleware.
 ```php
 Route::middleware(['tenancy.creating.bypass'])->post('your-route', ...);
+```
+
+To re-enable auto-assignment after bypassing:
+```php
+Tenancy::resetCreatingBypass();
 ```
 
 ---

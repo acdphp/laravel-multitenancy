@@ -54,11 +54,13 @@ trait BelongsToTenant
 
     public function getScopeTenancyFromRelation(): ?string
     {
+        /** @phpstan-ignore nullCoalesce.property (Property is in class context) */
         return $this->scopeTenancyFromRelation ?? null;
     }
 
     public function getAutoAssignTenantId(): bool
     {
+        /** @phpstan-ignore nullCoalesce.property (Property is in class context) */
         return $this->autoAssignTenantId ?? true;
     }
 }
