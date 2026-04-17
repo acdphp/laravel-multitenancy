@@ -6,6 +6,10 @@ use Acdphp\Multitenancy\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $site_id
+ */
 class Product extends Model
 {
     use BelongsToTenant;

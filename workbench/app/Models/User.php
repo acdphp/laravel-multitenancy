@@ -17,6 +17,7 @@ class User extends Authenticatable
     use BelongsToTenant;
 
     protected $fillable = [
+        'company_id',
         'name',
         'email',
         'password',
