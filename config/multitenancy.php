@@ -7,6 +7,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Column name in the model that associates the tenant id.
+    | This can be overridden per-model by defining a protected string $tenantRefKey property on the model.
     |
     */
     'tenant_ref_key' => 'company_id',

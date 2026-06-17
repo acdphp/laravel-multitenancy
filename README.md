@@ -44,6 +44,24 @@ class Site extends Model
 }
 ```
 
+## Per-model column name override
+The `tenant_ref_key` config defines the column name globally. You can override it for a specific model by defining the `$tenantRefKey` property. This affects auto-assignment on creation and all scoping queries for that model.
+```php
+use \Acdphp\Multitenancy\Traits\BelongsToTenant;
+
+class Site extends Model
+{
+    use BelongsToTenant;
+
+    protected string $tenantRefKey = 'org_id'; // Override the global tenant_ref_key for this model
+
+    protected $fillable = [
+        'org_id',
+        ...
+    ];
+}
+```
+
 ## Scoping from parent relationship
 ```php
 use \Acdphp\Multitenancy\Traits\BelongsToTenant;
