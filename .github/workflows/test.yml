@@ -78,8 +78,11 @@ jobs:
           extensions: mbstring, xml, hash, ctype, iconv, curl
           coverage: none
 
-      - name: Configure Composer for older Laravel versions
-        if: matrix.laravel == 8 || matrix.laravel == 9
+      - name: Allow installing EOL framework versions for testing
+        # End-of-life Laravel releases (and their only testbench-compatible
+        # framework versions) carry unpatched security advisories, so Composer
+        # refuses to install them by default. The matrix only tests framework
+        # compatibility, so disable advisory blocking for every job.
         run: composer config audit.block-insecure false
 
       - name: Install dependencies

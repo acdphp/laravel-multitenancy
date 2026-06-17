@@ -6,6 +6,7 @@ use Acdphp\Multitenancy\Facades\Tenancy;
 use Acdphp\Multitenancy\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 use Workbench\App\Models\Site;
+use Workbench\App\Models\SiteCustomKey;
 use Workbench\Database\Factories\CompanyFactory;
 use Workbench\Database\Factories\ProductFactory;
 use Workbench\Database\Factories\SiteFactory;
@@ -194,6 +195,33 @@ class MultitenancyTest extends TestCase
         foreach ($sites as $site) {
             $this->assertContains($site->company_id, [$company1->id, $company2->id]);
         }
+    }
+
+    public function test_should_use_per_model_tenant_ref_key_override(): void
+    {
+        $company1 = CompanyFactory::new()->create();
+        $company2 = CompanyFactory::new()->create();
+
+        Tenancy::setTenantIdResolver(fn () => $company1->id);
+
+        // Auto-assigns the tenant id to the overridden column on creation
+        $site = SiteCustomKey::create(['foo' => 'bar']);
+        $this->assertEquals($company1->id, $site->org_id);
+        $this->assertDatabaseHas('custom_key_sites', [
+            'id' => $site->id,
+            'org_id' => $company1->id,
+        ]);
+
+        // Seed a record belonging to another tenant on the same column
+        SiteCustomKey::query()->forceCreate([
+            'foo' => 'baz',
+            'org_id' => $company2->id,
+        ]);
+
+        // Scoping filters on the overridden column
+        $sites = SiteCustomKey::all();
+        $this->assertCount(1, $sites);
+        $this->assertEquals($company1->id, $sites->first()->org_id);
     }
 
     public function test_setting_tenant_id_resolver_resets_scoping_tenant_id(): void

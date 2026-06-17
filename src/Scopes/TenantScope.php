@@ -23,20 +23,20 @@ class TenantScope implements Scope
         if ($this->getModelScopeTenancyFromRelation($model)) {
             $this->scopeFromRelation($builder, $model);
         } else {
-            $this->scope($builder);
+            $this->scope($builder, $model);
         }
     }
 
     public function creating(Model $model): void
     {
-        if (Tenancy::creatingBypassed() || isset($model->{$this->getModelTenantKey()})) {
+        if (Tenancy::creatingBypassed() || isset($model->{$this->getModelTenantKey($model)})) {
             return;
         }
 
-        $model->{$this->getModelTenantKey()} = Tenancy::tenantId();
+        $model->{$this->getModelTenantKey($model)} = Tenancy::tenantId();
     }
 
-    protected function scope(Builder $builder): void
+    protected function scope(Builder $builder, Model $model): void
     {
         $tenantId = Tenancy::scopingTenantId();
 
@@ -45,9 +45,9 @@ class TenantScope implements Scope
         }
 
         if (is_array($tenantId)) {
-            $builder->whereIn($this->getModelTenantKey(), $tenantId);
+            $builder->whereIn($this->getModelTenantKey($model), $tenantId);
         } else {
-            $builder->where($this->getModelTenantKey(), $tenantId);
+            $builder->where($this->getModelTenantKey($model), $tenantId);
         }
     }
 
@@ -63,12 +63,19 @@ class TenantScope implements Scope
                 return;
             }
 
-            $this->scope($builder);
+            $this->scope($builder, $builder->getModel());
         });
     }
 
-    protected function getModelTenantKey(): string
+    protected function getModelTenantKey(Model $model): string
     {
+        if (method_exists($model, 'getTenantRefKey')) {
+            /**
+             * @uses BelongsToTenant::getTenantRefKey
+             */
+            return $model->getTenantRefKey();
+        }
+
         return config('multitenancy.tenant_ref_key');
     }
 

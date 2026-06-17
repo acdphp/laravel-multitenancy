@@ -9,7 +9,7 @@ trait BelongsToTenant
 {
     public function initializeBelongsToTenant(): void
     {
-        $tenantRefKey = config('multitenancy.tenant_ref_key');
+        $tenantRefKey = $this->getTenantRefKey();
 
         if (! $this->getScopeTenancyFromRelation() && ! in_array($tenantRefKey, $this->fillable)) {
             $this->fillable[] = $tenantRefKey;
@@ -62,5 +62,11 @@ trait BelongsToTenant
     {
         /** @phpstan-ignore nullCoalesce.property (Property is in class context) */
         return $this->autoAssignTenantId ?? true;
+    }
+
+    public function getTenantRefKey(): string
+    {
+        /** @phpstan-ignore nullCoalesce.property (Property is in class context) */
+        return $this->tenantRefKey ?? config('multitenancy.tenant_ref_key');
     }
 }
